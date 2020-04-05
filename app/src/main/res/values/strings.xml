@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Shopping list application</string>
+    <string name="itemColumn">Item</string>
+    <string name="amountColumn">Amount</string>
+    <string name="addButton">Add</string>
 </resources>
