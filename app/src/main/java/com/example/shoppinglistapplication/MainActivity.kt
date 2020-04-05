@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
@@ -18,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         //loadAutoComplete()
         val addButton = findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener { addItem() }
+        val deleteCheckedButton = findViewById<Button>(R.id.deleteCheckedButton)
+        deleteCheckedButton.setOnClickListener { deleteItem() }
     }
 
     fun loadData(){
@@ -97,8 +100,10 @@ class MainActivity : AppCompatActivity() {
     }*/
 
     fun addItem(){
-        var name = findViewById<EditText>(R.id.itemToAdd).text.toString()
-        var amount = findViewById<EditText>(R.id.amountToAdd).text.toString()
+        var nameField = findViewById<EditText>(R.id.itemToAdd)
+        var name = nameField.text.toString()
+        var amountField = findViewById<EditText>(R.id.amountToAdd)
+        var amount= amountField.text.toString()
         val item = hashMapOf<String, Any>(
             name to amount
         )
@@ -115,5 +120,39 @@ class MainActivity : AppCompatActivity() {
 
         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
         addItemToTable(name, amount, shoppingList)
+
+        nameField.setText("")
+        amountField.setText("")
+
+
+    }
+
+    fun deleteItem(){
+        val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
+        val removable = ArrayList<Int>()
+        for (i in 1 until shoppingList.childCount){
+            val row = shoppingList.getChildAt(i) as TableRow
+            val checkBox = row.getChildAt(2) as CheckBox
+            if (checkBox.isChecked){
+                val item = row.getChildAt(0) as TextView
+                deleteFromDatabase(item.text.toString())
+                removable.add(i)
+            }
+        }
+        removable.reverse()
+        for (i in 0 until removable.size){
+            shoppingList.removeViewAt(removable[i])
+        }
+    }
+
+    fun deleteFromDatabase(item: String){
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("shoppingList").document("jTGLEUh")
+
+        val updates = hashMapOf<String, Any>(
+            item to FieldValue.delete()
+        )
+
+        docRef.update(updates).addOnCompleteListener { }
     }
 }
