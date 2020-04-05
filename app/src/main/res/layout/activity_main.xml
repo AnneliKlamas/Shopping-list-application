@@ -27,17 +27,19 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:shrinkColumns="*"
+            android:stretchColumns="*">
 
-            <AutoCompleteTextView
+            <EditText
                 android:id="@+id/itemToAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AutoCompleteTextView" />
+                android:hint="Product" />
 
             <EditText
                 android:id="@+id/amountToAdd"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="numberDecimal" />
@@ -76,7 +78,7 @@
         </TableLayout>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/deleteCheckedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Button" />
