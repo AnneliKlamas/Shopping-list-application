@@ -3,6 +3,7 @@ package com.example.shoppinglistapplication
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +52,12 @@ class MainActivity : AppCompatActivity() {
                             val amount = array[0] as String
                             val isChecked = array[1] as Boolean
                             addItemToTable(key, amount, isChecked, shoppingList)
+                            val deleteCheckedButton = findViewById<Button>(R.id.deleteCheckedButton)
+                            val deleteAllButton = findViewById<Button>(R.id.deleteAllButton)
+                            deleteCheckedButton.setVisibility(View.VISIBLE)
+                            deleteAllButton.setVisibility(View.VISIBLE)
+                            shoppingList.setVisibility(View.VISIBLE)
+
                         }
                     }
                 }
@@ -178,6 +185,9 @@ class MainActivity : AppCompatActivity() {
                 updateItem(amount.text.toString(), checkBox.isChecked, name.text.toString())
             }
             shoppingList.removeViewAt(1)
+            deleteCheckedButton.setVisibility(View.GONE)
+            deleteAllButton.setVisibility(View.GONE)
+            shoppingList.setVisibility(View.GONE)
         }
     }
 
@@ -187,10 +197,13 @@ class MainActivity : AppCompatActivity() {
         for (i in 1 until shoppingList.childCount){
             val row = shoppingList.getChildAt(i) as TableRow
             val name = row.getChildAt(0) as TextView
+            val oldAmount = row.getChildAt(1) as TextView
             if(item.equals(name.text.toString())){
+
                 val intent = Intent(this, PopActivity::class.java)
                 intent.putExtra("name", item)
                 intent.putExtra("amount", amount)
+                intent.putExtra("oldAmount", oldAmount.text.toString())
                 startActivity(intent)
                 return true
             }
@@ -221,6 +234,9 @@ class MainActivity : AppCompatActivity() {
 
             val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
             addItemToTable(name, amount, false, shoppingList)
+                deleteCheckedButton.setVisibility(View.VISIBLE)
+                deleteAllButton.setVisibility(View.VISIBLE)
+                shoppingList.setVisibility(View.VISIBLE)
             }
 
             nameField.setText("")

@@ -16,6 +16,7 @@ class PopActivity : AppCompatActivity() {
 
     private var name = ""
     private var amount = ""
+    private var oldAmount = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +26,7 @@ class PopActivity : AppCompatActivity() {
         val bundle = intent.extras
         name = bundle?.getString("name", "name") ?: ""
         amount = bundle?.getString("amount", "amount") ?: ""
+        oldAmount = bundle?.getString("oldAmount", "oldAmount") ?: ""
 
         val dm = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(dm)
@@ -35,9 +37,11 @@ class PopActivity : AppCompatActivity() {
         getWindow().setLayout((width*0.8).toInt(), (height*0.4).toInt())
 
         val existingItemText = findViewById<TextView>(R.id.existingItemText)
-        existingItemText.setText("Item: " + name)
+        existingItemText.setText(name)
         val existingAmountText = findViewById<TextView>(R.id.existingAmountText)
-        existingAmountText.setText("Amount: " + amount)
+        existingAmountText.setText(oldAmount)
+        val newAmountText = findViewById<TextView>(R.id.newItemAmount)
+        newAmountText.setText(amount)
 
         val cancelButton = findViewById<Button>(R.id.cancelButton)
         val replaceButton = findViewById<Button>(R.id.replaceButton)
