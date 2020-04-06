@@ -1,6 +1,7 @@
 package com.example.shoppinglistapplication
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,12 +24,18 @@ class MainActivity : AppCompatActivity() {
         val deleteCheckedButton = findViewById<Button>(R.id.deleteCheckedButton)
         deleteCheckedButton.setOnClickListener { deleteItem() }
         val deleteAllButton = findViewById<Button>(R.id.deleteAllButton)
-        deleteAllButton.setOnClickListener { deleteAll() }
+        deleteAllButton.setOnClickListener { deleteAll(true) }
+        val refreshButton = findViewById<Button>(R.id.refreshButton)
+        refreshButton.setOnClickListener {refresh()}
+    }
+
+    fun refresh(){
+        deleteAll(false)
+        loadData()
     }
 
     fun loadData(){
         // Access a Cloud Firestore instance from your Activity
-
         val db = FirebaseFirestore.getInstance()
         db.collection("shoppingList").document("jTGLEUh")
             .get()
@@ -39,11 +47,10 @@ class MainActivity : AppCompatActivity() {
                         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
                         for (itemInfo in data){
                             val key = itemInfo.key
-                            val value = itemInfo.value.toString()
-                            addItemToTable(key, value, shoppingList)
-
-
-
+                            val array = itemInfo.value as ArrayList<*>
+                            val amount = array[0] as String
+                            val isChecked = array[1] as Boolean
+                            addItemToTable(key, amount, isChecked, shoppingList)
                         }
                     }
                 }
@@ -56,7 +63,8 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    fun addItemToTable(key:String,value:String, shoppingList: TableLayout){
+
+    fun addItemToTable(key:String,value:String, isChecked:Boolean, shoppingList: TableLayout){
         val row = TableRow(this)
         row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -75,7 +83,11 @@ class MainActivity : AppCompatActivity() {
             text = value
         }
         row.addView(amount)
-        row.addView(CheckBox(this))
+        val checkBox = CheckBox(this)
+        if (isChecked){
+            checkBox.setChecked(true)
+        }
+        row.addView(checkBox)
         shoppingList.addView(row)
     }
 
@@ -89,7 +101,6 @@ class MainActivity : AppCompatActivity() {
                 if (document != null) {
                     Log.d("exist", "DocumentSnapshot data: ${document.data}")
 
-
                 }
                 else {
                     Log.d("noexist", "No such document")
@@ -101,30 +112,48 @@ class MainActivity : AppCompatActivity() {
         return emptyList()
     }*/
 
+    fun updateItem(amount: String, checkBox: Boolean, name: String){
+        val db = FirebaseFirestore.getInstance()
+        val array = ArrayList<Any>()
+        array.add(amount)
+        array.add(checkBox)
+        val item = hashMapOf<String, ArrayList<Any>>(
+            name to array
+        )
+        db.collection("shoppingList").document("jTGLEUh")
+            .set(item as Map<String, Any>, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d(
+                    "Added",
+                    "DocumentSnapshot successfully written!"
+                )
+            }
+            .addOnFailureListener { e -> Log.w("noAdded", "Error writing document", e) }
+    }
     fun addItem(){
+
         var nameField = findViewById<EditText>(R.id.itemToAdd)
         var name = nameField.text.toString()
         var amountField = findViewById<EditText>(R.id.amountToAdd)
         var amount= amountField.text.toString()
-        val item = hashMapOf<String, Any>(
-            name to amount
-        )
-        val db = FirebaseFirestore.getInstance()
 
-        db.collection("shoppingList").document("jTGLEUh")
-            .set(item, SetOptions.merge())
-            .addOnSuccessListener { Log.d("Added", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w("noAdded", "Error writing document", e) }
+        if (name.trim()==""){
+            nameField.setError("Empty value!")
+        }
 
-        val row = TableRow(this)
-        row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
+        else{
+            updateItem(amount, false, name)
 
-        val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
-        addItemToTable(name, amount, shoppingList)
+            val row = TableRow(this)
+            row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        nameField.setText("")
-        amountField.setText("")
+            val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
+            addItemToTable(name, amount, false, shoppingList)
+
+            nameField.setText("")
+            amountField.setText("")
+        }
 
 
     }
@@ -161,15 +190,20 @@ class MainActivity : AppCompatActivity() {
         docRef.update(updates).addOnCompleteListener { }
     }
 
-    fun deleteAll(){
+    fun deleteAll(fromdatabase: Boolean){
         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
         while (shoppingList.childCount>1){
             val row = shoppingList.getChildAt(1) as TableRow
-            val item = row.getChildAt(0) as TextView
-            deleteFromDatabase(item.text.toString())
+            val name = row.getChildAt(0) as TextView
+            val amount = row.getChildAt(1) as TextView
+            val checkBox = row.getChildAt(2) as CheckBox
+            if(fromdatabase){
+                deleteFromDatabase(name.text.toString())
+            }
+            else {
+                updateItem(amount.text.toString(), checkBox.isChecked, name.text.toString())
+            }
             shoppingList.removeViewAt(1)
-
         }
-
     }
 }

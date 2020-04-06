@@ -4,4 +4,7 @@
     <string name="amountColumn">Amount</string>
     <string name="addButton">Add</string>
     <string name="deleteAllButton">Remove all items</string>
+    <string name="deleteCheckedButton">Remove checked items</string>
+    <string name="addAmountText">Amount</string>
+    <string name="refreshButton">Refresh</string>
 </resources>
