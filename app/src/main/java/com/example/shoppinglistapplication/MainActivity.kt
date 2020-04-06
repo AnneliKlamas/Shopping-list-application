@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         addButton.setOnClickListener { addItem() }
         val deleteCheckedButton = findViewById<Button>(R.id.deleteCheckedButton)
         deleteCheckedButton.setOnClickListener { deleteItem() }
+        val deleteAllButton = findViewById<Button>(R.id.deleteAllButton)
+        deleteAllButton.setOnClickListener { deleteAll() }
     }
 
     fun loadData(){
@@ -130,6 +132,9 @@ class MainActivity : AppCompatActivity() {
     fun deleteItem(){
         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
         val removable = ArrayList<Int>()
+
+        //Proovi ka shoppingList.childCount downTo 1 ja siis võibolla
+        // polegi vaja reverse ja ka teist tsüklit
         for (i in 1 until shoppingList.childCount){
             val row = shoppingList.getChildAt(i) as TableRow
             val checkBox = row.getChildAt(2) as CheckBox
@@ -154,5 +159,17 @@ class MainActivity : AppCompatActivity() {
         )
 
         docRef.update(updates).addOnCompleteListener { }
+    }
+
+    fun deleteAll(){
+        val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
+        while (shoppingList.childCount>1){
+            val row = shoppingList.getChildAt(1) as TableRow
+            val item = row.getChildAt(0) as TextView
+            deleteFromDatabase(item.text.toString())
+            shoppingList.removeViewAt(1)
+
+        }
+
     }
 }

@@ -3,4 +3,5 @@
     <string name="itemColumn">Item</string>
     <string name="amountColumn">Amount</string>
     <string name="addButton">Add</string>
+    <string name="deleteAllButton">Remove all items</string>
 </resources>
