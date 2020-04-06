@@ -1,7 +1,7 @@
 package com.example.shoppinglistapplication
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import org.w3c.dom.Text
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -130,33 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e -> Log.w("noAdded", "Error writing document", e) }
     }
-    fun addItem(){
 
-        var nameField = findViewById<EditText>(R.id.itemToAdd)
-        var name = nameField.text.toString()
-        var amountField = findViewById<EditText>(R.id.amountToAdd)
-        var amount= amountField.text.toString()
-
-        if (name.trim()==""){
-            nameField.setError("Empty value!")
-        }
-
-        else{
-            updateItem(amount, false, name)
-
-            val row = TableRow(this)
-            row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT)
-
-            val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
-            addItemToTable(name, amount, false, shoppingList)
-
-            nameField.setText("")
-            amountField.setText("")
-        }
-
-
-    }
 
     fun deleteItem(){
         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
@@ -204,6 +178,53 @@ class MainActivity : AppCompatActivity() {
                 updateItem(amount.text.toString(), checkBox.isChecked, name.text.toString())
             }
             shoppingList.removeViewAt(1)
+        }
+    }
+
+    fun checkIfItemExists(item:String, amount:String) :Boolean{
+        var shoppingList = findViewById<TableLayout>(R.id.shoppingList)
+
+        for (i in 1 until shoppingList.childCount){
+            val row = shoppingList.getChildAt(i) as TableRow
+            val name = row.getChildAt(0) as TextView
+            if(item.equals(name.text.toString())){
+                val intent = Intent(this, PopActivity::class.java)
+                intent.putExtra("name", item)
+                intent.putExtra("amount", amount)
+                startActivity(intent)
+                return true
+            }
+        }
+        return false
+    }
+
+
+    fun addItem(){
+
+        var nameField = findViewById<EditText>(R.id.itemToAdd)
+        var name = nameField.text.toString()
+        var amountField = findViewById<EditText>(R.id.amountToAdd)
+        var amount= amountField.text.toString()
+
+        if (name.trim()==""){
+            nameField.setError("Empty value!")
+        }
+
+        else{
+            if(!checkIfItemExists(name, amount)){
+
+            updateItem(amount, false, name)
+
+            val row = TableRow(this)
+            row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+
+            val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
+            addItemToTable(name, amount, false, shoppingList)
+            }
+
+            nameField.setText("")
+            amountField.setText("")
         }
     }
 }
