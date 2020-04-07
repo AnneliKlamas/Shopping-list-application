@@ -149,6 +149,11 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until removable.size){
             shoppingList.removeViewAt(removable[i])
         }
+        if (shoppingList.childCount==1){
+            deleteCheckedButton.setVisibility(View.GONE)
+            deleteAllButton.setVisibility(View.GONE)
+            shoppingList.setVisibility(View.GONE)
+        }
     }
 
     /**
@@ -230,7 +235,28 @@ class MainActivity : AppCompatActivity() {
             nameField.setError("Empty value!")
         }
 
+
         else{
+            //val errorCharacters = mapOf("." to ",", "/" to "|", "*" to "×", "~" to "-")
+
+            if (name.contains(".")){
+                name = name.replace(".",",")
+            }
+            if (name.contains("/")){
+                name = name.replace("/","|")
+            }
+            if (name.contains("*")){
+                name = name.replace("*","×")
+            }
+            if (name.contains("~")){
+                name = name.replace("~","-")
+            }
+            if (name.contains("[") ){
+                name = name.replace("[","|")
+            }
+            if (name.contains("]") ){
+                name = name.replace("]","|")
+            }
             if(!checkIfItemExists(name, amount)){
 
             updateItem(amount, false, name)
@@ -250,4 +276,11 @@ class MainActivity : AppCompatActivity() {
             amountField.setText("")
         }
     }
+    override fun onStop() {
+        // call the superclass method first
+        super.onStop()
+        deleteAll(false)
+
+    }
+
 }

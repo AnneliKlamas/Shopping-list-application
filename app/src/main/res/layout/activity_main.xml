@@ -88,16 +88,17 @@
                 android:id="@+id/deleteCheckedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button"
-                android:visibility="gone"
-                android:backgroundTint="@color/colorAccent"/>
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/deleteCheckedButton"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/deleteAllButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#803700B3"
                 android:text="@string/deleteAllButton"
-                android:backgroundTint="#803700B3"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/refreshButton"
