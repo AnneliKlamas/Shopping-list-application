@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Button
-import android.widget.TableLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,32 +43,33 @@ class PopActivity : AppCompatActivity() {
         newAmountText.setText(amount)
 
         val cancelButton = findViewById<Button>(R.id.cancelButton)
-        val replaceButton = findViewById<Button>(R.id.replaceButton)
         cancelButton.setOnClickListener {
             finish()
         }
+        val replaceButton = findViewById<Button>(R.id.replaceButton)
         replaceButton.setOnClickListener {
-            addItem(name, amount)
+            updateItem(name, amount)
             startActivity(Intent(
                 applicationContext,
                 MainActivity::class.java)
             )}
-
-
     }
+
+    /**
+     * Function that doesn't allow to use back button
+     */
     override fun onBackPressed() {
     }
 
-    fun addItem(name:String, amount:String){
-        updateItem(amount, false, name)
-        val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
-    }
+    /**
+     * Function that updates database, when user decides to override his previous item.
+     */
 
-    fun updateItem(amount: String, checkBox: Boolean, name: String){
+    fun updateItem(amount: String, name: String){
         val db = FirebaseFirestore.getInstance()
         val array = ArrayList<Any>()
         array.add(amount)
-        array.add(checkBox)
+        array.add(false)
         val item = hashMapOf<String, ArrayList<Any>>(
             name to array
         )

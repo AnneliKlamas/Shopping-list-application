@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         loadData()
-        //loadAutoComplete()
         val addButton = findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener { addItem() }
         val deleteCheckedButton = findViewById<Button>(R.id.deleteCheckedButton)
@@ -27,16 +26,17 @@ class MainActivity : AppCompatActivity() {
         val deleteAllButton = findViewById<Button>(R.id.deleteAllButton)
         deleteAllButton.setOnClickListener { deleteAll(true) }
         val refreshButton = findViewById<Button>(R.id.refreshButton)
-        refreshButton.setOnClickListener {refresh()}
+        refreshButton.setOnClickListener {
+            deleteAll(false)
+            loadData()}
     }
 
-    fun refresh(){
-        deleteAll(false)
-        loadData()
-    }
-
+    /**
+     * Function that loads data from Cloud Firestore to application's table
+     * Uses: addItemToTable()
+     * Is used by: onCreate()
+     */
     fun loadData(){
-        // Access a Cloud Firestore instance from your Activity
         val db = FirebaseFirestore.getInstance()
         db.collection("shoppingList").document("jTGLEUh")
             .get()
@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                             deleteCheckedButton.setVisibility(View.VISIBLE)
                             deleteAllButton.setVisibility(View.VISIBLE)
                             shoppingList.setVisibility(View.VISIBLE)
-
                         }
                     }
                 }
@@ -70,7 +69,11 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-
+    /**
+     * Function that puts one item into the tabel but not in the database.
+     * Uses: none
+     * Is used by: addItem(); loadData()
+     */
     fun addItemToTable(key:String,value:String, isChecked:Boolean, shoppingList: TableLayout){
         val row = TableRow(this)
         row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -98,27 +101,11 @@ class MainActivity : AppCompatActivity() {
         shoppingList.addView(row)
     }
 
-    /**fun loadAutoComplete(): List<String>{
-        val db = FirebaseFirestore.getInstance()
-        val list = listOf<String>()
-
-        db.collection("shoppingList").document("aOWMf")
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d("exist", "DocumentSnapshot data: ${document.data}")
-
-                }
-                else {
-                    Log.d("noexist", "No such document")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("errordb", "get failed with ", exception)
-            }
-        return emptyList()
-    }*/
-
+    /**
+     * Function that puts data into database
+     * Uses: none
+     * Is used by: deleteAll(); addItem()
+     */
     fun updateItem(amount: String, checkBox: Boolean, name: String){
         val db = FirebaseFirestore.getInstance()
         val array = ArrayList<Any>()
@@ -138,7 +125,11 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { e -> Log.w("noAdded", "Error writing document", e) }
     }
 
-
+    /**
+     * Function that deletes selected items
+     * Uses: deleteFromDatabase()
+     * Is used by: onCreate()
+     */
     fun deleteItem(){
         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
         val removable = ArrayList<Int>()
@@ -160,17 +151,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function that deletes specified item (key) from database
+     * Uses: none
+     * Is used by: deleteItem(); deleteAll()
+     */
     fun deleteFromDatabase(item: String){
         val db = FirebaseFirestore.getInstance()
         val docRef = db.collection("shoppingList").document("jTGLEUh")
-
         val updates = hashMapOf<String, Any>(
             item to FieldValue.delete()
         )
-
         docRef.update(updates).addOnCompleteListener { }
     }
 
+    /**
+     * Function that deletes all items. Is also used when refreshing table.
+     * Uses: deleteFromDatabase(); updateItem()
+     * Is used by: onCreate()
+     */
     fun deleteAll(fromdatabase: Boolean){
         val shoppingList = findViewById<TableLayout>(R.id.shoppingList)
         while (shoppingList.childCount>1){
@@ -191,6 +190,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function that checks if there already exist item that is being added at the moment
+     * Uses: none
+     * Is used by: addItem()
+     */
     fun checkIfItemExists(item:String, amount:String) :Boolean{
         var shoppingList = findViewById<TableLayout>(R.id.shoppingList)
 
@@ -211,9 +215,12 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-
+    /**
+     * Function that adds item
+     * Uses: checkIfItemExists(); addItemToTable()
+     * Is used by: onCreate()
+     */
     fun addItem(){
-
         var nameField = findViewById<EditText>(R.id.itemToAdd)
         var name = nameField.text.toString()
         var amountField = findViewById<EditText>(R.id.amountToAdd)
