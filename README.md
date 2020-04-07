@@ -6,5 +6,8 @@ There are 2 classes (Activities): one for list and one for pop-up window. And 2 
 
 This application doesn't have any automated tests, because I couldn't figure out how to make them...
 
+Used Kotlin first time in my life.
 
 How to run application: You can run application in Your IDE with emulator or phone(make sure You have enabled debbuging in developer mode), which is connected by USB. You can also download application from this link: https://mega.nz/file/G1kjWI6S#7_89hu6KrE7EzMuVWt5JLjXuIm-GkHEYHgpRFaxvIB8
+
+
