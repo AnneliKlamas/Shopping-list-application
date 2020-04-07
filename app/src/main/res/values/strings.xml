@@ -9,7 +9,7 @@
     <string name="refreshButton">Refresh</string>
     <string name="warning">Warning!</string>
     <string name="warningMessage">You tried to add existing item to Your list.</string>
-    <string name="warningSuggestion">Do You want to replace old, sum up both or cancel adding.</string>
+    <string name="warningSuggestion">Do You want to replace old or cancel adding.</string>
     <string name="sumButton">Sum items</string>
     <string name="replaceButtom">Replace</string>
 </resources>

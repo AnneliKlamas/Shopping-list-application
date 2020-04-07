@@ -235,7 +235,6 @@ class MainActivity : AppCompatActivity() {
             nameField.setError("Empty value!")
         }
 
-
         else{
             //val errorCharacters = mapOf("." to ",", "/" to "|", "*" to "×", "~" to "-")
 
@@ -271,7 +270,6 @@ class MainActivity : AppCompatActivity() {
                 deleteAllButton.setVisibility(View.VISIBLE)
                 shoppingList.setVisibility(View.VISIBLE)
             }
-
             nameField.setText("")
             amountField.setText("")
         }
@@ -280,7 +278,6 @@ class MainActivity : AppCompatActivity() {
         // call the superclass method first
         super.onStop()
         deleteAll(false)
-
     }
 
 }
