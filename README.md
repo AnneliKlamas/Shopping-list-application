@@ -7,4 +7,4 @@ There are 2 classes (Activities): one for list and one for pop-up window. And 2 
 This application doesn't have any automated tests, because I couldn't figure out how to make them...
 
 
-How to run application: You can run application in Your IDE with emulator or phone(make sure You have enabled debbuging in developer mode), which is connected by USB. You can also download application from this link: https://mega.nz/file/bgsGBCgR#Hxb2Aog_UM3emkiGVMoQ2c9vqyQUD2RfVyv_UP_4Zbg
+How to run application: You can run application in Your IDE with emulator or phone(make sure You have enabled debbuging in developer mode), which is connected by USB. You can also download application from this link: https://mega.nz/file/L4lHjLwS#W8Jm_HsnL8eOQ6NSsEjcuDRApqU4W1w8npXU1FU6tQU
