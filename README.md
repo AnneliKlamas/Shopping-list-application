@@ -4,7 +4,7 @@ Shopping list application is an application where user can add items and amount 
 
 There are 2 classes (Activities): one for list and one for pop-up window. And 2 Layouts for each class. There is also drawable xml file for both activity backrounds.
 
-This application doesen't have any automated tests, because I couldn't figure out how to make them...
+This application doesn't have any automated tests, because I couldn't figure out how to make them...
 
 
 How to run application: You can run application in Your IDE with emulator or phone(make sure You have enabled debbuging in developer mode), which is connected by USB. You can also download application from this link: https://mega.nz/file/bgsGBCgR#Hxb2Aog_UM3emkiGVMoQ2c9vqyQUD2RfVyv_UP_4Zbg
